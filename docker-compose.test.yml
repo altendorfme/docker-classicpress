@@ -1,0 +1,29 @@
+services:
+  db:
+    image: mariadb:11
+    environment:
+      MYSQL_ROOT_PASSWORD: classicpress
+      MYSQL_DATABASE: classicpress
+      MYSQL_USER: classicpress
+      MYSQL_PASSWORD: classicpress
+
+  classicpress:
+    depends_on:
+      - db
+    build: ./
+    image: ${IMAGE_NAME}:${IMAGE_TAG}
+    environment:
+      DB_HOST: db
+      DB_PASSWORD: classicpress
+      DB_NAME: classicpress
+      DB_USER: classicpress
+      WORDPRESS_SITE_URL: http://localhost
+      FS_METHOD: direct
+
+  sut:
+    image: alpine:3.21
+    depends_on:
+      - classicpress
+    command: /tmp/run_tests.sh
+    volumes:
+      - "./run_tests.sh:/tmp/run_tests.sh:ro"
