@@ -60,11 +60,11 @@ ENV CLASSICPRESS_SHA1 7649225404b8757e7b2c2940ea3fcb98067e0001
 RUN mkdir -p /usr/src
 
 # Upstream tarballs include ./classicpress/ so this gives us /usr/src/classicpress
-RUN curl -o {CLASSICPRESS_VERSION}.tar.gz -SL https://github.com/ClassicPress/ClassicPress-release/archive/refs/tags/{CLASSICPRESS_VERSION}.tar.gz \
-  && echo "$CLASSICPRESS_SHA1 *{CLASSICPRESS_VERSION}.tar.gz" | sha1sum -c - \
-  && tar -xzf {CLASSICPRESS_VERSION}.tar.gz -C /usr/src/ \
-  && rm {CLASSICPRESS_VERSION}.tar.gz \
-  && mv ClassicPress-release-{CLASSICPRESS_VERSION} classicpress \
+RUN curl -o ${CLASSICPRESS_VERSION}.tar.gz -SL https://github.com/ClassicPress/ClassicPress-release/archive/refs/tags/${CLASSICPRESS_VERSION}.tar.gz \
+  && echo "$CLASSICPRESS_SHA1 *$CLASSICPRESS_VERSION.tar.gz" | sha1sum -c - \
+  && tar -xzf ${CLASSICPRESS_VERSION}.tar.gz -C /usr/src/ \
+  && rm ${CLASSICPRESS_VERSION}.tar.gz \
+  && mv ClassicPress-release-${CLASSICPRESS_VERSION} classicpress \
   && chown -R nobody:nobody /usr/src/classicpress
 
 # Add WP CLI
