@@ -7,7 +7,7 @@ on:
   pull_request:
 
 env:
-  IMAGE_NAME: altendorfme/classicpress
+  IMAGE_NAME: ghcr.io/${{ github.repository }}
   IMAGE_TAG: ${{ github.sha }}
   DOCKER_BUILDKIT: 1
 
@@ -49,6 +49,14 @@ jobs:
         with:
           sarif_file: "trivy-results.sarif"
 
+      - name: Login to GitHub Container Registry
+        if: github.ref == 'refs/heads/master' && (github.event_name == 'push' || github.event_name == 'schedule')
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Build multi-arch image and push latest tag
         if: github.ref == 'refs/heads/master' && (github.event_name == 'push' || github.event_name == 'schedule')
         run: |-
@@ -62,6 +70,14 @@ jobs:
       - name: Set tag in environment
         if: contains(github.ref, 'refs/tags/')
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+
+      - name: Login to GitHub Container Registry (for tags)
+        if: contains(github.ref, 'refs/tags/')
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build multi-arch image and push release tag
         if: contains(github.ref, 'refs/tags/')
