@@ -30,8 +30,8 @@ RUN apk --no-cache add \
   php84-pecl-imagick \
   php84-session \
   php84-tokenizer \
-  php84-redis \
-  php84-memcached \
+  php84-pecl-redis \
+  php84-pecl-memcached \
   nginx \
   supervisor \
   curl \
