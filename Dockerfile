@@ -64,7 +64,7 @@ RUN curl -o {CLASSICPRESS_VERSION}.tar.gz -SL https://github.com/ClassicPress/Cl
   && echo "$CLASSICPRESS_SHA1 *{CLASSICPRESS_VERSION}.tar.gz" | sha1sum -c - \
   && tar -xzf {CLASSICPRESS_VERSION}.tar.gz -C /usr/src/ \
   && rm {CLASSICPRESS_VERSION}.tar.gz \
-  && mv ClassicPress-release-{CLASSICPRESS_VERSION} classicpress
+  && mv ClassicPress-release-{CLASSICPRESS_VERSION} classicpress \
   && chown -R nobody:nobody /usr/src/classicpress
 
 # Add WP CLI
