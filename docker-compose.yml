@@ -1,41 +1,28 @@
 services:
-  db:
+  mariadb:
     image: mariadb:11
     volumes:
-      - "db-data:/var/lib/mysql"
+      - "./mariadb:/var/lib/mysql"
     environment:
-      MYSQL_ROOT_PASSWORD: wordpress
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: wordpress
-      MYSQL_PASSWORD: wordpress
-
-  wordpress:
+      MYSQL_ROOT_PASSWORD: classicpress
+      MYSQL_DATABASE: classicpress
+      MYSQL_USER: classicpress
+      MYSQL_PASSWORD: classicpress
+  classicpress:
+    image: ghcr.io/altendorfme/classicpress
     depends_on:
-      - db
-    build: ./
+      - mariadb
     volumes:
-      - "site-data:/var/www/wp-content"
+      - "./classicpress/wp-content:/var/www/wp-content"
     ports:
       - "8123:80"
     environment:
       DB_HOST: db
-      DB_PASSWORD: wordpress
-      DB_NAME: wordpress
-      DB_USER: wordpress
-      WORDPRESS_SITE_URL: http://localhost:8123
+      DB_PASSWORD: classicpress
+      DB_NAME: classicpress
+      DB_USER: classicpress
+      WP_SITE_URL: http://localhost:8123
       FS_METHOD: direct
       # For debugging only:
       #WP_DEBUG: "true"
       #WP_DEBUG_DISPLAY: "true"
-
-volumes:
-  db-data:
-  site-data:
-
-networks:
-  default:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 192.168.91.0/24

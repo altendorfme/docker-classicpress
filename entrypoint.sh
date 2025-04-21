@@ -6,8 +6,8 @@ set -e
 # Check if volume is empty
 if [ ! "$(ls -A "/var/www/wp-content" 2>/dev/null)" ]; then
     echo 'Setting up wp-content volume'
-    # Copy wp-content from Wordpress src to volume
-    cp -r /usr/src/wordpress/wp-content /var/www/
+    # Copy wp-content from ClassicPress src to volume
+    cp -r /usr/src/classicpress/wp-content /var/www/
     chown -R nobody:nobody /var/www
 fi
 # Check if wp-secrets.php exists

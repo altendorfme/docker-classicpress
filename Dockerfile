@@ -1,6 +1,6 @@
 FROM alpine:3.21
-LABEL Maintainer="Tim de Pater <code@trafex.nl>" \
-  Description="Lightweight WordPress container with Nginx 1.26 & PHP-FPM 8.4 based on Alpine Linux."
+LABEL Maintainer="Renan A Bernordi <altendorfme@gmail.com>" \
+  Description="Lightweight ClassicPress container with Nginx 1.26 & PHP-FPM 8.4 based on Alpine Linux."
 
 # Install packages
 RUN apk --no-cache add \
@@ -53,31 +53,31 @@ VOLUME /var/www/wp-content
 WORKDIR /var/www/wp-content
 RUN chown -R nobody:nobody /var/www
 
-# WordPress
-ENV WORDPRESS_VERSION 6.7.2
-ENV WORDPRESS_SHA1 ff727df89b694749e91e357dc2329fac620b3906
+# ClassicPress
+ENV CLASSICPRESS_VERSION 2.4.1
+ENV CLASSICPRESS_SHA1 7649225404B8757E7B2C2940EA3FCB98067E0001
 
 RUN mkdir -p /usr/src
 
-# Upstream tarballs include ./wordpress/ so this gives us /usr/src/wordpress
-RUN curl -o wordpress.tar.gz -SL https://wordpress.org/wordpress-${WORDPRESS_VERSION}.tar.gz \
-  && echo "$WORDPRESS_SHA1 *wordpress.tar.gz" | sha1sum -c - \
-  && tar -xzf wordpress.tar.gz -C /usr/src/ \
-  && rm wordpress.tar.gz \
-  && chown -R nobody:nobody /usr/src/wordpress
+# Upstream tarballs include ./classicpress/ so this gives us /usr/src/classicpress
+RUN curl -o classicpress.tar.gz -SL https://github.com/ClassicPress/ClassicPress-release/archive/{CLASSICPRESS_VERSION}.tar.gz \
+  && echo "$CLASSICPRESS_SHA1 *classicpress.tar.gz" | sha1sum -c - \
+  && tar -xzf classicpress.tar.gz -C /usr/src/ \
+  && rm classicpress.tar.gz \
+  && chown -R nobody:nobody /usr/src/classicpress
 
 # Add WP CLI
-ENV WP_CLI_CONFIG_PATH /usr/src/wordpress/wp-cli.yml
+ENV WP_CLI_CONFIG_PATH /usr/src/classicpress/wp-cli.yml
 RUN curl -o /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
   && chmod +x /usr/local/bin/wp
-COPY --chown=nobody:nobody wp-cli.yml /usr/src/wordpress/
+COPY --chown=nobody:nobody wp-cli.yml /usr/src/classicpress/
 
 # WP config
-COPY --chown=nobody:nobody wp-config.php /usr/src/wordpress
-RUN chmod 640 /usr/src/wordpress/wp-config.php
+COPY --chown=nobody:nobody wp-config.php /usr/src/classicpress
+RUN chmod 640 /usr/src/classicpress/wp-config.php
 
 # Link wp-secrets to location on wp-content
-RUN ln -s /var/www/wp-content/wp-secrets.php /usr/src/wordpress/wp-secrets.php
+RUN ln -s /var/www/wp-content/wp-secrets.php /usr/src/classicpress/wp-secrets.php
 
 # Entrypoint to copy wp-content
 COPY entrypoint.sh /entrypoint.sh
